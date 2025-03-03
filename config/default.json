@@ -1,0 +1,7 @@
+{
+  "constants": {
+    "API_URL": "https://tasks-backend-production-46b4.up.railway.app/api/",
+    "JWT_SECRET": "281d9d3a8611d7383137fdc7442466f33e94c2c4dd005f8b1816ba188a66aa4a40a2069108be4a8ce52e9b944607c6a4fb60af8130ff25816bcf36888af4dd7f",
+    "MAX_ATTEMPTS": 10
+  }
+}
