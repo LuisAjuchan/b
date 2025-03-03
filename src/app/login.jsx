@@ -18,8 +18,10 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-500 to-teal-500">
+    
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+        <h1 className="text-3xl font-bold text-center text-gray-700 mb-6">Iniciar sesión</h1>
+         
         <h2 className="text-3xl font-bold text-center text-gray-700 mb-6">Iniciar sesión</h2>
         
         {error && <div className="text-red-500 text-sm text-center mb-4">{error}</div>}
@@ -68,6 +70,6 @@ export default function Login() {
           </p>
         </div>
       </div>
-    </div>
+   
   );
 }
