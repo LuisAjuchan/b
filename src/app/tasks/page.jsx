@@ -50,12 +50,14 @@ const fetchTasks = async () => {
     const storedUserData = JSON.parse(localStorage.getItem("dataUser"));
     if (!storedUserData) return;
     setUserData(storedUserData);
-    const data = await getTasksByUser(storedUserData.id);
-    setTasksByUser(data);
+
+    // Verificar si ya se han obtenido tareas para evitar peticiones innecesarias
+    if (tasksByUser.length === 0) {
+      const data = await getTasksByUser(storedUserData.id);
+      setTasksByUser(data);
+    }
   } catch (error) {
     console.error("Error al obtener tareas:", error);
-  } finally {
-  
   }
 };
   
