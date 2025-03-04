@@ -1,18 +1,18 @@
-import apiClient from "./apiClient";
+import execute from "./apiClient";
 
 export const getTasks = async () => {
-  const { data } = await apiClient.get("/tasks");
+  const data  = await execute("tasks",'GET');
   return data;
 };
 
 export const createTask = async (task) => {
-  return await apiClient.post("/tasks", task);
+  return await execute("tasks",'POST', task);
 };
 
 export const updateTask = async (id, task) => {
-  return await apiClient.put(`/tasks/${id}`, task);
+  return await execute(`tasks/${id}`,'PUT', task);
 };
 
 export const deleteTask = async (id) => {
-  return await apiClient.delete(`/tasks/${id}`);
+  return await execute(`tasks/${id}`, 'DELETE');
 };

@@ -30,8 +30,7 @@ const nextConfig = {
     ...constants
   },
   images: {
-    domains: ['www.via-asesores.com', 'gt.via-asesores.com'],
-    unoptimized: true // solo para generar sitio estatico
+
   },
   assetPrefix: constants.publicPath,
   basePath: constants.publicPath,

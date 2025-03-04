@@ -2,6 +2,7 @@
 "use client"; // Asegúrate de que este archivo se ejecute en el cliente
 
 import { AuthProvider } from "../contexts/authContext"; // Ruta correcta al contexto
+import { TaskProvider } from "../contexts/taskContext"; // Ruta correcta al contexto
 import "../app/globals.css"; // Asegúrate de importar los estilos globales
 import { ToastContainer } from 'react-toastify'
 
@@ -16,9 +17,11 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         {/* Aquí puedes agregar el AuthProvider para envolver toda la aplicación */}
+        <TaskProvider>
         <AuthProvider>
           {children}
         </AuthProvider>
+        </TaskProvider>
       </body>
     </html>
   );

@@ -5,7 +5,9 @@ import { motion } from "framer-motion";
 import AuthContext from "../../contexts/authContext"; 
 
 export default function Register() {
+  
   const { register } = useContext(AuthContext);
+  console.log(register)
   const router = useRouter();
 
   const [formData, setFormData] = useState({
