@@ -11,35 +11,50 @@ export function AuthProvider({ children }) {
   const router = useRouter();
 
   useEffect(() => {
-    const auth = localStorage.getItem("auth");
-    if (auth.token) {
-      setUser(jwtDecode(auth.token));
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+      } catch (error) {
+        console.error("Token inválido:", error);
+        localStorage.removeItem("token"); // Eliminar token inválido
+        setUser(null);
+      }
     }
   }, []);
 
   const login = async (email, password) => {
     try {
       const auth = await Login(email, password);
-      localStorage.setItem("auth", auth);
-      setUser(jwtDecode(auth.token));
-      router.push("/tasks");
+      if (auth.token) {
+        localStorage.setItem("token", auth.token);
+        localStorage.setItem("dataUser", auth.user);
+        setUser(jwtDecode(auth.token));
+        router.push("/tasks");
+      }
     } catch (error) {
-      console.error("Login failed", error);
+      console.error("Login fallido:", error);
     }
   };
-   
+
   const register = async (userData) => {
     try {
       const response = await Register(userData);
-      console.log(response)
-      router.push("/tasks");
+      if (response?.token) {
+        localStorage.setItem("token", response.token);
+   
+        setUser(jwtDecode(response.token));
+        router.push("/tasks");
+      }
     } catch (error) {
-      console.error("Login failed", error);
+      console.error("Registro fallido:", error);
     }
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("dataUser");
     setUser(null);
     router.push("/login");
   };
