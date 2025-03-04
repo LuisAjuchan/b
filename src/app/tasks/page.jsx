@@ -19,13 +19,22 @@ export default function TaskList() {
   const router = useRouter();
 
   useEffect(() => {
-    const storedUserData = JSON.parse(localStorage.getItem("dataUser"));
-
+    const storedUserData = localStorage.getItem("dataUser");
+  
     if (storedUserData) {
-       setUserData(storedUserData)
-     }
+      try {
+        const parsedData = JSON.parse(storedUserData);
+  
+        if (parsedData && Object.keys(parsedData).length > 0) {
+          setUserData(parsedData);
+        } else {
+          console.warn("dataUser está vacío o no es un objeto válido:", parsedData);
+        }
+      } catch (error) {
+        console.error("Error al parsear dataUser:", error);
+      }
+    }
   }, []);
-
 
   const refreshTasks = async () => {
     setIsProcessing(true);
