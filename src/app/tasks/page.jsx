@@ -1,9 +1,11 @@
 'use client';
 import { useState, useContext, useEffect } from 'react';
 import TaskContext from '../../contexts/taskContext';
+import AuthContext from '../../contexts/authContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { CiLogout } from "react-icons/ci";
 import {
   FaClock,
   FaCheckCircle,
@@ -16,10 +18,14 @@ import {
   FaUser,
 } from 'react-icons/fa';
 import { ClipLoader } from 'react-spinners';
+import{ getTasks,getTasksByUser, createTask, updateTask, deleteTask } from "../../services/taskService"; // Ajusta la ruta según tu estructura
 
 export default function TaskList() {
   const { tasks, loading, addTask, editTask, removeTask } = useContext(
     TaskContext
+  );
+  const {logout } = useContext(
+    AuthContext
   );
   const [newTask, setNewTask] = useState({
     user_id: 0,
@@ -34,7 +40,34 @@ export default function TaskList() {
   const [filter, setFilter] = useState('');
   const [userData, setUserData] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [tasksByUser, setTasksByUser] = useState([]);
   const router = useRouter();
+
+ 
+// Función para obtener las tareas
+const fetchTasks = async () => {
+  try {
+    const storedUserData = JSON.parse(localStorage.getItem("dataUser"));
+    if (!storedUserData) return;
+    setUserData(storedUserData);
+    const data = await getTasksByUser(storedUserData.id);
+    setTasksByUser(data);
+  } catch (error) {
+    console.error("Error al obtener tareas:", error);
+  } finally {
+  
+  }
+};
+  
+// Ejecutar fetchTasks al montar el componente y cuando `tasksByUser` cambie
+useEffect(() => {
+  fetchTasks();
+
+
+}, [tasksByUser]);
+
+   
+
 
   useEffect(() => {
     const storedUserData = localStorage.getItem('dataUser');
@@ -114,7 +147,7 @@ const getStatusLabel = (status) => {
   }
 };
 
-  const filteredTasks = tasks.filter((task) =>
+  const filteredTasks = tasksByUser.filter((task) =>
     task?.title?.toLowerCase()?.includes(filter.toLowerCase())
   );
 
@@ -184,13 +217,13 @@ const getStatusLabel = (status) => {
 
       {/* Menú en el Footer */}
       <footer className='fixed bottom-0 left-0 w-full bg-gray-800 p-4 flex justify-around text-white'>
-        <a
-          href='#'
-          className='flex flex-col items-center gap-1 text-gray-300 hover:text-white transition'
-        >
-          <FaHome className='text-xl' />
-          <span className='text-sm'>Inicio</span>
-        </a>
+      <button
+      onClick={logout}
+      className="flex flex-col items-center gap-1 text-gray-300 hover:text-white transition"
+    >
+      <CiLogout className="text-xl" />
+      <span className="text-sm">Salir</span>
+    </button>
         <a
           href='#'
           className='flex flex-col items-center gap-1 text-gray-300 hover:text-white transition'
