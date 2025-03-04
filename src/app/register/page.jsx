@@ -85,7 +85,7 @@ export default function Register() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-gray-600 mb-2">
-              Nombre
+              Nombre <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -102,7 +102,7 @@ export default function Register() {
 
           <div>
             <label htmlFor="email" className="block text-gray-600 mb-2 ">
-              Correo electrónico
+              Correo electrónico <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -118,8 +118,8 @@ export default function Register() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-gray-600 mb-2">
-              Contraseña
+          <label htmlFor="password" className="block text-gray-300 mb-1">
+              Contraseña <span className="text-red-500">*</span>
             </label>
             <input
               type="password"
@@ -136,7 +136,7 @@ export default function Register() {
 
           <div>
             <label htmlFor="confirmPassword" className="block text-gray-600 mb-2">
-              Confirmar contraseña
+              Confirmar contraseña <span className="text-red-500">*</span>
             </label>
             <input
               type="password"
