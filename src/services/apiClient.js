@@ -26,8 +26,6 @@ export const execute = async (endpoint, method = "GET", body = null, customHeade
 
 
     const result=  await response.json();
-
-    console.log(result,response.json())
     return result;
   } catch (error) {
     console.error(`Error en ${method}:`, error);
