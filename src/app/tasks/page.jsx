@@ -64,7 +64,7 @@ useEffect(() => {
   fetchTasks();
 
 
-}, [tasksByUser]);
+}, []);
 
    
 
