@@ -27,6 +27,7 @@ export const TaskProvider = ({ children }) => {
 
   // Agregar una nueva tarea
   const addTask = async (task) => {
+    console.log(task)
     try {
       const newTask = await createTask(task);
       setTasks((prevTasks) => [...prevTasks, newTask]);

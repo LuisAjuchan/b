@@ -11,17 +11,17 @@ export function AuthProvider({ children }) {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setUser(jwtDecode(token));
+    const auth = localStorage.getItem("auth");
+    if (auth.token) {
+      setUser(jwtDecode(auth.token));
     }
   }, []);
 
   const login = async (email, password) => {
     try {
-      const token = await Login(email, password);
-      localStorage.setItem("token", token);
-      setUser(jwtDecode(token));
+      const auth = await Login(email, password);
+      localStorage.setItem("auth", auth);
+      setUser(jwtDecode(auth.token));
       router.push("/tasks");
     } catch (error) {
       console.error("Login failed", error);

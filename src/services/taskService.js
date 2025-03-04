@@ -6,6 +6,7 @@ export const getTasks = async () => {
 };
 
 export const createTask = async (task) => {
+  console.log('createTask',task)
   return await execute("tasks",'POST', task);
 };
 

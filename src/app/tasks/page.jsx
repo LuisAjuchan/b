@@ -90,27 +90,7 @@ export default function TaskList() {
         </div>
       </main>
 
-      {/* Menú en el Footer */}
-      <footer className="fixed bottom-0 left-0 w-full bg-gray-800 p-4 flex justify-around text-white">
-        <a href="#" className="flex flex-col items-center gap-1 text-gray-300 hover:text-white transition">
-          <FaHome className="text-xl" />
-          <span className="text-sm">Inicio</span>
-        </a>
-        <a href="#" className="flex flex-col items-center gap-1 text-gray-300 hover:text-white transition">
-          <FaList className="text-xl" />
-          <span className="text-sm">Tareas</span>
-        </a>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="absolute bottom-16 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition"
-        >
-          <FaPlus className="text-2xl" />
-        </button>
-        <a href="#" className="flex flex-col items-center gap-1 text-gray-300 hover:text-white transition">
-          <FaUser className="text-xl" />
-          <span className="text-sm">Perfil</span>
-        </a>
-      </footer>
+      
 
       {/* Modal para agregar o editar tarea */}
       {isModalOpen && (

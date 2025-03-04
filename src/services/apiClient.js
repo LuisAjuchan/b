@@ -1,13 +1,13 @@
 
 const API_BASE_URL = process.env.API_URL; // Asegúrate de definir esta variable en tu .env
 
-const getToken = () => localStorage.getItem("token");
+const getToken = () => localStorage.getItem("auth");
 
 export const execute = async (endpoint, method = "GET", body = null, customHeaders = {}) => {
   try {
     const headers = {
       "Content-Type": "application/json",
-      ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}),
+      ...(getToken().token ? { Authorization: `Bearer ${getToken().token}` } : {}),
       ...customHeaders,
     };
 
