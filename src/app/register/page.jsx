@@ -1,10 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState  , useContext} from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import AuthContext from "../../contexts/authContext"; 
 
 export default function Register() {
+  const { register } = useContext(AuthContext);
   const router = useRouter();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -57,7 +60,8 @@ export default function Register() {
     setIsSubmitting(true); // Bloquear botón mientras se procesa
 
     setTimeout(() => {
-      console.log("Usuario registrado:", formData);
+      e.preventDefault();
+      register(formData)
       router.push("/login"); // Redirigir al login
       setIsSubmitting(false);
     }, 1000);
@@ -66,14 +70,6 @@ export default function Register() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-[#3B82F6] to-[#14B8A6]">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-4xl font-extrabold text-center text-gray-800 mb-8 tracking-wide"
-        >
-          📝 Registrarse
-        </motion.h1>
         <h2 className="text-3xl font-bold text-center text-gray-700 mb-6">
           Crea tu cuenta
         </h2>
@@ -97,7 +93,7 @@ export default function Register() {
               placeholder="Tu nombre"
               value={formData.name}
               onChange={handleChange}
-              className={`w-full p-3 border rounded-lg focus:ring-2 ${
+              className={`w-full p-3 border rounded-lg focus:ring-2 text-gray-700 ${
                 error ? "border-red-500 focus:ring-red-400" : "border-gray-800 focus:ring-blue-400"
               }`}
               required
@@ -105,7 +101,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-gray-600 mb-2">
+            <label htmlFor="email" className="block text-gray-600 mb-2 ">
               Correo electrónico
             </label>
             <input
@@ -114,7 +110,7 @@ export default function Register() {
               placeholder="Correo electrónico"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full p-3 border rounded-lg focus:ring-2 ${
+              className={`w-full p-3 border rounded-lg focus:ring-2 text-gray-700 ${
                 error ? "border-red-500 focus:ring-red-400" : "border-gray-800 focus:ring-blue-400"
               }`}
               required
@@ -131,7 +127,7 @@ export default function Register() {
               placeholder="Contraseña"
               value={formData.password}
               onChange={handleChange}
-              className={`w-full p-3 border rounded-lg focus:ring-2 ${
+              className={`w-full p-3 border rounded-lg focus:ring-2 text-gray-700 ${
                 error ? "border-red-500 focus:ring-red-400" : "border-gray-800 focus:ring-blue-400"
               }`}
               required
@@ -148,7 +144,7 @@ export default function Register() {
               placeholder="Confirmar contraseña"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={`w-full p-3 border rounded-lg focus:ring-2 ${
+              className={`w-full p-3 border rounded-lg focus:ring-2 text-gray-700 ${
                 error ? "border-red-500 focus:ring-red-400" : "border-gray-800 focus:ring-blue-400"
               }`}
               required

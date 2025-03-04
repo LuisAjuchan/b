@@ -1,24 +1,29 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState , useContext } from "react";
+import { useRouter  } from "next/navigation";
 import { motion } from "framer-motion";
-
+import AuthContext from "../../contexts/authContext"; 
 export default function Login() {
+  const { login } = useContext(AuthContext);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+
+
+
+  
   // Expresión regular para validar email
   const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  // Validar contraseña (mínimo 6 caracteres, al menos una mayúscula y un número)
-  const validatePassword = (password) => {
-    return /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password);
-  };
+  // // Validar contraseña (mínimo 6 caracteres, al menos una mayúscula y un número)
+  // const validatePassword = (password) => {
+  //   return /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password);
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -30,24 +35,24 @@ export default function Login() {
       return;
     }
 
-    if (!validatePassword(password)) {
-      setError(
-        "La contraseña debe tener al menos 6 caracteres, una mayúscula y un número."
-      );
-      return;
-    }
+    // if (!validatePassword(password)) {
+    //   setError(
+    //     "La contraseña debe tener al menos 6 caracteres, una mayúscula y un número."
+    //   );
+    //   return;
+    // }
 
     setIsSubmitting(true); // Deshabilitar botón mientras se procesa
 
     setTimeout(() => {
-      if (email === "admin@example.com" && password === "Password123") {
-        router.push("/dashboard");
-      } else {
-        setError("Credenciales incorrectas.");
-      }
+      e.preventDefault();
+      login(email, password);
       setIsSubmitting(false);
     }, 1000);
   };
+
+
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-[#3B82F6] to-[#14B8A6]">

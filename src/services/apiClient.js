@@ -1,19 +1,43 @@
-import axios from "axios";
 
-const API_BASE_URL = process.env.API_URL;
-console.log(API_BASE_URL)
+const API_BASE_URL = process.env.API_URL; // Asegúrate de definir esta variable en tu .env
 
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  headers: { "Content-Type": "application/json" },
-});
+const getToken = () => localStorage.getItem("token");
 
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+export const execute = async (endpoint, method = "GET", body = null, customHeaders = {}) => {
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}),
+      ...customHeaders,
+    };
+
+    const config = {
+      method,
+      headers,
+      ...(body ? { body: JSON.stringify(body) } : {}),
+    };
+     
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Error en la solicitud ${method}`);
+    }
+
+
+    const result=  await response.json();
+
+
+    return result;
+  } catch (error) {
+    console.error(`Error en ${method}:`, error);
+    throw error;
   }
-  return config;
-});
+};
 
-export default apiClient;
+export default execute;
+
+
+
+
+
