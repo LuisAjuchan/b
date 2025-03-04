@@ -29,7 +29,8 @@ export function AuthProvider({ children }) {
       const auth = await Login(email, password);
       if (auth.token) {
         localStorage.setItem("token", auth.token);
-        localStorage.setItem("dataUser", auth.user);
+        localStorage.setItem("dataUser", JSON.stringify(auth.user));
+        
         setUser(jwtDecode(auth.token));
         router.push("/tasks");
       }

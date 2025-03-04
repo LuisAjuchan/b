@@ -1,9 +1,9 @@
-// app/layout.js
-'use client'; // Asegúrate de que este archivo se ejecute en el cliente
+'use client';
 
-import { AuthProvider } from '../contexts/authContext'; // Ruta correcta al contexto
-import { TaskProvider } from '../contexts/taskContext'; // Ruta correcta al contexto
-import '../app/globals.css'; // Asegúrate de importar los estilos globales
+import { useState, useEffect } from 'react';
+import { AuthProvider } from '../contexts/authContext';
+import { TaskProvider } from '../contexts/taskContext';
+import '../app/globals.css';
 import { ToastContainer } from 'react-toastify';
 import {
   FaClock,
@@ -16,20 +16,23 @@ import {
   FaHome,
   FaUser,
 } from 'react-icons/fa';
+
 export default function RootLayout({ children }) {
+
+
   return (
     <html lang='en'>
       <head>
-        {/* Aquí puedes agregar tus metas, links y scripts globales */}
         <meta charSet='UTF-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <title>Gestor de Tareas</title>
       </head>
       <body>
-        {/* Aquí puedes agregar el AuthProvider para envolver toda la aplicación */}
         <TaskProvider>
           <AuthProvider>{children}</AuthProvider>
         </TaskProvider>
+        
+   
       </body>
     </html>
   );

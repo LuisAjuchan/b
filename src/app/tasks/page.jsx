@@ -1,25 +1,54 @@
 "use client";
-import { useState, useContext } from "react";
+import { useState, useContext,useEffect } from "react";
 import TaskContext from "../../contexts/taskContext";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { FaClock, FaCheckCircle, FaTasks, FaPlus, FaTrash, FaEdit, FaList, FaHome, FaUser } from "react-icons/fa";
+import { ClipLoader } from "react-spinners";
+
 
 export default function TaskList() {
   const { tasks, loading, addTask, editTask, removeTask } = useContext(TaskContext);
-  const [newTask, setNewTask] = useState({ title: "", description: "", status: "pending" });
+  const [newTask, setNewTask] = useState({user_id:0 ,title: "", description: "",status_ic:0,priority_id: "1", status: "PEND"});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [filter, setFilter] = useState("");
+  const [userData, setUserData] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
 
-  const handleSaveTask = () => {
+  useEffect(() => {
+    const storedUserData = JSON.parse(localStorage.getItem("dataUser"));
+
+    if (storedUserData) {
+       setUserData(storedUserData)
+     }
+  }, []);
+
+
+  const refreshTasks = async () => {
+    setIsProcessing(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula carga
+    setIsProcessing(false);
+  };
+
+
+  const handleSaveTask = async () => {
+    newTask.user_id = userData.id;
     if (newTask.title.trim() && newTask.description.trim()) {
+      setIsProcessing(true);
       if (editingTask) {
-        editTask({ ...editingTask, ...newTask });
+        await editTask(editingTask.id, { ...editingTask, ...newTask });
+        toast.success("Tarea actualizada correctamente");
       } else {
-        addTask(newTask);
+        await addTask(newTask);
+        toast.success("Tarea agregada correctamente");
       }
-      setNewTask({ title: "", description: "", status: "pending" });
+      setNewTask({ title: "", description: "", status: "PEND" });
       setIsModalOpen(false);
       setEditingTask(null);
+      await refreshTasks();
     }
   };
 
@@ -31,11 +60,11 @@ export default function TaskList() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "pending":
+      case "PEND":
         return <FaTasks className="text-yellow-400 text-xl" />;
-      case "in-progress":
+      case "INPG":
         return <FaClock className="text-blue-400 text-xl" />;
-      case "completed":
+      case "COMP":
         return <FaCheckCircle className="text-green-400 text-xl" />;
       default:
         return <FaTasks className="text-gray-400 text-xl" />;
@@ -43,13 +72,14 @@ export default function TaskList() {
   };
 
   const filteredTasks = tasks.filter((task) =>
-    task.title.toLowerCase().includes(filter.toLowerCase())
+    task?.title?.toLowerCase()?.includes(filter.toLowerCase())
   );
+  
 
   if (loading) return <p className="text-center text-gray-400">Cargando tareas...</p>;
 
   return (
-    <div className="h-screen flex flex-col bg-gray-900 text-gray-200">
+    <div className="h-screen flex flex-col  text-gray-200">
       <main className="flex-1 p-6">
         <h2 className="text-3xl font-bold text-center text-gray-100 mb-6">Lista de Tareas</h2>
 
@@ -61,6 +91,7 @@ export default function TaskList() {
           onChange={(e) => setFilter(e.target.value)}
           className="w-full p-2 mb-4 border rounded-lg bg-gray-800 text-white"
         />
+         {isProcessing && <ClipLoader color="#36D7B7" size={50} className="mx-auto mb-4" />}
 
         {/* Grid de tareas */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -90,7 +121,27 @@ export default function TaskList() {
         </div>
       </main>
 
-      
+      {/* Menú en el Footer */}
+      <footer className="fixed bottom-0 left-0 w-full bg-gray-800 p-4 flex justify-around text-white">
+        <a href="#" className="flex flex-col items-center gap-1 text-gray-300 hover:text-white transition">
+          <FaHome className="text-xl" />
+          <span className="text-sm">Inicio</span>
+        </a>
+        <a href="#" className="flex flex-col items-center gap-1 text-gray-300 hover:text-white transition">
+          <FaList className="text-xl" />
+          <span className="text-sm">Tareas</span>
+        </a>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="absolute bottom-16 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition"
+        >
+          <FaPlus className="text-2xl" />
+        </button>
+        <a href="#" className="flex flex-col items-center gap-1 text-gray-300 hover:text-white transition">
+          <FaUser className="text-xl" />
+          <span className="text-sm">Perfil</span>
+        </a>
+      </footer>
 
       {/* Modal para agregar o editar tarea */}
       {isModalOpen && (
@@ -117,9 +168,19 @@ export default function TaskList() {
               onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
               className="w-full p-2 border rounded-lg bg-gray-700 text-white mb-4"
             >
-              <option value="pending">Pendiente</option>
-              <option value="in-progress">En progreso</option>
-              <option value="completed">Completado</option>
+              <option value="PEND">Pendiente</option>
+              <option value="INPG">En progreso</option>
+              <option value="COMP">Completado</option>
+            </select>
+            <select
+              value={newTask.priority_id}
+              onChange={(e) => setNewTask({ ...newTask, priority_id: e.target.value })}
+              className="w-full p-2 border rounded-lg bg-gray-700 text-white mb-4"
+            >
+              <option value="1">Baja</option>
+              <option value="2">Media</option>
+              <option value="3">Alta</option>
+              <option value="4">Urgente</option>
             </select>
             <div className="flex justify-end gap-2">
               <button

@@ -5,13 +5,17 @@ export const getTasks = async () => {
   return data;
 };
 
+export const getTasksByUser = async (id) => {
+  const data = await execute(`tasks/${id}`, 'GET');
+  return data;
+};
+
 export const createTask = async (task) => {
-  console.log('createTask',task)
   return await execute("tasks",'POST', task);
 };
 
 export const updateTask = async (id, task) => {
-  return await execute(`tasks/${id}`,'PUT', task);
+  return await execute(`tasks/${id}`,'PUT',task);
 };
 
 export const deleteTask = async (id) => {

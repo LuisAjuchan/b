@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
-import{ getTasks, createTask, updateTask, deleteTask } from "../services/taskService"; // Ajusta la ruta según tu estructura
+import{ getTasks,getTasksByUser, createTask, updateTask, deleteTask } from "../services/taskService"; // Ajusta la ruta según tu estructura
+
 
 const TaskContext = createContext();
 
@@ -9,12 +10,13 @@ export const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Obtener tareas al cargar
+
   useEffect(() => {
+    const storedUserData = JSON.parse(localStorage.getItem("dataUser"));
     const fetchTasks = async () => {
+     
       try {
-        const data = await getTasks();
-        console.log('task', data);
+        const data = await getTasksByUser(storedUserData.id);
         setTasks(data);
       } catch (error) {
         console.error("Error al obtener tareas:", error);
@@ -27,7 +29,6 @@ export const TaskProvider = ({ children }) => {
 
   // Agregar una nueva tarea
   const addTask = async (task) => {
-    console.log(task)
     try {
       const newTask = await createTask(task);
       setTasks((prevTasks) => [...prevTasks, newTask]);
@@ -37,9 +38,10 @@ export const TaskProvider = ({ children }) => {
   };
 
   // Editar una tarea existente
-  const editTask = async (id, updatedTask) => {
+  const editTask = async (id,updatedTask) => {
     try {
       const updated = await updateTask(id, updatedTask);
+     
       setTasks((prevTasks) =>
         prevTasks.map((task) => (task.id === id ? updated : task))
       );
