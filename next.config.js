@@ -40,7 +40,7 @@ const nextConfig = {
   },
   rewrites,
   reactStrictMode: true,
-  output: 'standalone', // utilizar para ambiente docker
+  output: 'export', // utilizar para ambiente docker
   swcMinify: true,
   eslint: {
     // Warning: This allows production builds to successfully complete even if
