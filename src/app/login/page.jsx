@@ -3,11 +3,14 @@ import { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import AuthContext from '../../contexts/authContext';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+
 export default function Login() {
   const { login } = useContext(AuthContext);
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -49,7 +52,7 @@ export default function Login() {
 
   return (
     <div className='flex justify-center items-center min-h-screen bg-gradient-to-r from-[#3B82F6] to-[#14B8A6]'>
-      <div className='w-full max-w-md p-8 bg-white rounded-lg shadow-lg sm:h-full md:h-full lg:h-full'>
+      <div className='w-full max-w-md p-8 bg-white rounded-lg shadow-lg min-h-sm flex flex-col  justify-center'>
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -93,18 +96,31 @@ export default function Login() {
             <label htmlFor='password' className='block text-gray-300 mb-1'>
               Contraseña <span className='text-red-500'>*</span>
             </label>
-            <input
-              type='password'
-              placeholder='Contraseña'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={`w-full p-3 border rounded-lg focus:ring-2 text-gray-700 ${
-                error
-                  ? 'border-red-500 focus:ring-red-400'
-                  : 'border-gray-200 focus:ring-blue-400'
-              }`}
-              required
-            />
+            <div className='relative'>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder='Contraseña'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`w-full p-3 border rounded-lg focus:ring-2 text-gray-700 ${
+                  error
+                    ? 'border-red-500 focus:ring-red-400'
+                    : 'border-gray-200 focus:ring-blue-400'
+                }`}
+                required
+              />
+              <button
+                type='button'
+                onClick={() => setShowPassword(!showPassword)}
+                className='absolute right-3 top-1/2 transform -translate-y-1/2'
+              >
+                {showPassword ? (
+                  <FaEyeSlash className='h-5 w-5 text-gray-600' />
+                ) : (
+                  <FaEye className='h-5 w-5 text-gray-600' />
+                )}
+              </button>
+            </div>
           </div>
 
           <button

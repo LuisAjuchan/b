@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import AuthContext from '../../contexts/authContext';
-
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 export default function Register() {
   const { register } = useContext(AuthContext);
   const router = useRouter();
@@ -13,7 +13,9 @@ export default function Register() {
     password: '',
     confirmPassword: '',
   });
-  const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Expresión regular para validar email
@@ -21,11 +23,7 @@ export default function Register() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  // Validar contraseña (mínimo 6 caracteres, una mayúscula y un número)
-  const validatePassword = (password) => {
-    return /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password);
-  };
-
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -45,12 +43,7 @@ export default function Register() {
       setError('Por favor ingresa un email válido.');
       return;
     }
-    if (!validatePassword(password)) {
-      setError(
-        'La contraseña debe tener al menos 6 caracteres, una mayúscula y un número.'
-      );
-      return;
-    }
+   
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden.');
       return;
@@ -68,7 +61,7 @@ export default function Register() {
 
   return (
     <div className='flex justify-center items-center min-h-screen bg-gradient-to-r from-[#3B82F6] to-[#14B8A6]'>
-      <div className='w-full max-w-md p-8 bg-white rounded-lg shadow-lg sm:h-full md:h-full lg:h-full'>
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg  flex flex-col justify-center">
         <h2 className='text-3xl font-bold text-center text-gray-700 mb-6'>
           Crea tu cuenta
         </h2>
@@ -120,46 +113,74 @@ export default function Register() {
             />
           </div>
 
-          <div>
-            <label htmlFor='password' className='block text-gray-300 mb-1'>
-              Contraseña <span className='text-red-500'>*</span>
-            </label>
-            <input
-              type='password'
-              name='password'
-              placeholder='Contraseña'
-              value={formData.password}
-              onChange={handleChange}
-              className={`w-full p-3 border rounded-lg focus:ring-2 text-gray-700 ${
-                error
-                  ? 'border-red-500 focus:ring-red-400'
-                  : 'border-gray-800 focus:ring-blue-400'
-              }`}
-              required
-            />
-          </div>
+      {/* Contraseña */}
+      <div>
+        <label htmlFor='password' className='block text-gray-300 mb-1'>
+          Contraseña <span className='text-red-500'>*</span>
+        </label>
+        <div className='relative'>
+          <input
+            type={showPassword ? 'text' : 'password'}
+            name='password'
+            placeholder='Contraseña'
+            value={formData.password}
+            onChange={handleChange}
+            className={`w-full p-3 border rounded-lg focus:ring-2 text-gray-700 ${
+              error
+                ? 'border-red-500 focus:ring-red-400'
+                : 'border-gray-800 focus:ring-blue-400'
+            }`}
+            required
+          />
+          <button
+            type='button'
+            onClick={() => setShowPassword(!showPassword)}
+            className='absolute right-3 top-1/2 transform -translate-y-1/2'
+          >
+            {showPassword ? (
+              <FaEyeSlash className='h-5 w-5 text-gray-600' />
+            ) : (
+              <FaEye className='h-5 w-5 text-gray-600' />
+            )}
+          </button>
+        </div>
+      </div>
 
-          <div>
-            <label
-              htmlFor='confirmPassword'
-              className='block text-gray-600 mb-2'
-            >
-              Confirmar contraseña <span className='text-red-500'>*</span>
-            </label>
-            <input
-              type='password'
-              name='confirmPassword'
-              placeholder='Confirmar contraseña'
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={`w-full p-3 border rounded-lg focus:ring-2 text-gray-700 ${
-                error
-                  ? 'border-red-500 focus:ring-red-400'
-                  : 'border-gray-800 focus:ring-blue-400'
-              }`}
-              required
-            />
-          </div>
+      {/* Confirmar Contraseña */}
+      <div>
+        <label
+          htmlFor='confirmPassword'
+          className='block text-gray-600 mb-2'
+        >
+          Confirmar contraseña <span className='text-red-500'>*</span>
+        </label>
+        <div className='relative'>
+          <input
+            type={showConfirmPassword ? 'text' : 'password'}
+            name='confirmPassword'
+            placeholder='Confirmar contraseña'
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className={`w-full p-3 border rounded-lg focus:ring-2 text-gray-700 ${
+              error
+                ? 'border-red-500 focus:ring-red-400'
+                : 'border-gray-800 focus:ring-blue-400'
+            }`}
+            required
+          />
+          <button
+            type='button'
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className='absolute right-3 top-1/2 transform -translate-y-1/2'
+          >
+            {showConfirmPassword ? (
+              <FaEyeSlash className='h-5 w-5 text-gray-600' />
+            ) : (
+              <FaEye className='h-5 w-5 text-gray-600' />
+            )}
+          </button>
+        </div>
+      </div>
 
           <button
             type='submit'
@@ -176,7 +197,7 @@ export default function Register() {
               onClick={() => router.push('/login')}
               className='text-blue-600 hover:underline'
             >
-              Regístrate aquí
+              Inicia sesión aquí
             </button>
           </p>
         </div>
