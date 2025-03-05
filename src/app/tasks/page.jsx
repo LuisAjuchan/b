@@ -15,9 +15,12 @@ import {
   FaEdit,
   FaList,
   FaHome,
+  FaBiking,
   FaUser,
 } from 'react-icons/fa';
-import { ClipLoader } from 'react-spinners';
+
+import ClipLoader from "react-spinners/ClipLoader";
+import PacmanLoader from "react-spinners/PacmanLoader";
 import{ getTasks,getTasksByUser, createTask, updateTask, deleteTask } from "../../services/taskService"; // Ajusta la ruta según tu estructura
 
 export default function TaskList() {
@@ -41,34 +44,32 @@ export default function TaskList() {
   const [userData, setUserData] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [tasksByUser, setTasksByUser] = useState([]);
+  const [shouldFetch, setShouldFetch] = useState(false);
+  const [time, setTime] = useState(new Date());
   const router = useRouter();
 
- 
-// Función para obtener las tareas
-const fetchTasks = async () => {
-  try {
-    const storedUserData = JSON.parse(localStorage.getItem("dataUser"));
-    if (!storedUserData) return;
-    setUserData(storedUserData);
-
-    // Verificar si ya se han obtenido tareas para evitar peticiones innecesarias
-    if (tasksByUser.length === 0) {
+  const fetchTasks = async () => {
+    try {
+      const storedUserData = JSON.parse(localStorage.getItem("dataUser"));
+      if (!storedUserData) return;
+  
+      setUserData(storedUserData);
+  
       const data = await getTasksByUser(storedUserData.id);
       setTasksByUser(data);
-    }
-  } catch (error) {
-    console.error("Error al obtener tareas:", error);
-  }
-};
   
-// Ejecutar fetchTasks al montar el componente y cuando `tasksByUser` cambie
-useEffect(() => {
-  fetchTasks();
-
-
-}, []);
-
-   
+    } catch (error) {
+      console.error("Error al obtener tareas:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchTasks();
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [shouldFetch]); // Se ejecuta cuando shouldFetch cambia
 
 
   useEffect(() => {
@@ -95,6 +96,8 @@ useEffect(() => {
   const refreshTasks = async () => {
     setIsProcessing(true);
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula carga
+
+  setShouldFetch(prev => !prev);
     setIsProcessing(false);
   };
 
@@ -105,9 +108,11 @@ useEffect(() => {
       if (editingTask) {
         await editTask(editingTask.id, { ...editingTask, ...newTask });
         toast.success('Tarea actualizada correctamente');
+        await refreshTasks();
       } else {
         await addTask(newTask);
         toast.success('Tarea agregada correctamente');
+        await refreshTasks();
       }
       setNewTask({ title: '', description: '', status: 'PEND' });
       setIsModalOpen(false);
@@ -173,9 +178,17 @@ const getStatusLabel = (status) => {
           onChange={(e) => setFilter(e.target.value)}
           className='w-full p-2 mb-4 border rounded-lg bg-gray-800 text-white'
         />
-        {isProcessing && (
-          <ClipLoader color='#36D7B7' size={50} className='mx-auto mb-4' />
-        )}
+        {  isProcessing && (
+      <div className="fixed inset-0 flex flex-col items-center justify-center bg-transparent">
+        <div className="bg-white/20 p-6 rounded-3xl shadow-lg flex flex-col items-center backdrop-blur-lg">
+          <PacmanLoader color="#36D7B7" size={10} ><FaBiking /></PacmanLoader>
+          <p className="mt-4 text-sm font-semibold text-gray-100">Loading...</p>
+          <p className="mt-2 text-gray-300 text-sm">
+            {time.toLocaleTimeString()}
+          </p>
+        </div>
+      </div>
+    )}
 
         {/* Grid de tareas */}
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
@@ -190,13 +203,13 @@ const getStatusLabel = (status) => {
                 </span>
                 <div className='flex gap-2'>
                   <button
-                    onClick={() => handleEditTask(task)}
+                    onClick={() =>   {refreshTasks(); handleEditTask(task)}}
                     className='text-blue-400 hover:text-blue-500'
                   >
                     <FaEdit />
                   </button>
                   <button
-                    onClick={() => removeTask(task.id)}
+                    onClick={() => {   refreshTasks(); removeTask(task.id)}}
                     className='text-red-400 hover:text-red-500'
                   >
                     <FaTrash />

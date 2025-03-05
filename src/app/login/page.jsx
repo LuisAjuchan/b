@@ -56,7 +56,7 @@ export default function Login() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-[#3B82F6] to-[#14B8A6]">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg min-h-sm flex flex-col  justify-center">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -121,9 +121,12 @@ export default function Login() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             ¿No tienes cuenta?{" "}
-            <a href="/register" className="text-blue-600 hover:underline">
+            <button
+              onClick={() => router.push('/register')}
+              className='text-blue-600 hover:underline'
+            >
               Regístrate aquí
-            </a>
+            </button>
           </p>
         </div>
       </div>
