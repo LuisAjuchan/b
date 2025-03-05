@@ -12,10 +12,11 @@ export const TaskProvider = ({ children }) => {
 
 
   useEffect(() => {
-    const storedUserData = JSON.parse(localStorage.getItem("dataUser"));
+  
     const fetchTasks = async () => {
      
       try {
+        const storedUserData = JSON.parse(localStorage.getItem("dataUser"));
         const data = await getTasksByUser(storedUserData.id);
         setTasks(data);
       } catch (error) {
